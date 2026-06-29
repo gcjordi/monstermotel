@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zxx">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -11,7 +11,7 @@
 <body>
   <div class="app" id="app">
     <div class="top">
-      <div class="brand"><div class="logo">🏨</div><div class="title">Monster Motel</div></div>
+      <div class="brand"><div class="logo" aria-hidden="true">🏨</div><div class="title">Monster Motel</div></div>
       <div class="stats" aria-live="polite">
         <div class="stat"><span>☀️</span><span class="value" id="day">1</span></div>
         <div class="stat"><span>🪙</span><span class="value" id="coins">80</span></div>
@@ -27,7 +27,7 @@
       </section>
       <aside class="side">
         <section class="panel">
-          <div class="iconHeader"><div class="bigIcon">🚪👾</div><button class="btn secondary" id="helpBtn" aria-label="help">❔</button></div>
+          <div class="iconHeader"><div class="bigIcon">🚪👾</div><button class="btn secondary" id="helpBtn" type="button" aria-label="help">❔</button></div>
           <div class="queue" id="queue"></div>
         </section>
         <section class="panel">
@@ -35,16 +35,16 @@
           <div class="shop" id="shop"></div>
         </section>
         <section class="actions">
-          <button class="btn" id="nightBtn" aria-label="night">🌙</button>
-          <button class="btn danger" id="resetBtn" aria-label="reset">🔄</button>
+          <button class="btn" id="nightBtn" type="button" aria-label="night">🌙</button>
+          <button class="btn danger" id="resetBtn" type="button" aria-label="reset">🔄</button>
         </section>
         <section class="panel events" id="events"></section>
       </aside>
     </div>
   </div>
 
-  <div class="overlay" id="overlay"><div class="modal" id="modal"></div></div>
+  <div class="overlay" id="overlay" role="dialog" aria-modal="true"><div class="modal" id="modal"></div></div>
 
-<script src="src/game.js"></script>
+<script type="module" src="src/game.js"></script>
 </body>
 </html>
