@@ -36,11 +36,11 @@ export const SHOP = [
 ];
 
 export const RANDOM_EVENTS = [
-  { icon: '🍀 🪙+10', coins: 10, chaos: 0, stars: 0 },
-  { icon: '🌈 ⭐+1', coins: 0, chaos: 0, stars: 1 },
-  { icon: '🧹 🌪️-2', coins: 0, chaos: -2, stars: 0 },
-  { icon: '🪲 🌪️+2', coins: 0, chaos: 2, stars: 0 },
-  { icon: '🎁 🪙+18', coins: 18, chaos: 0, stars: 0 },
-  { icon: '🧯 🌪️-1', coins: 0, chaos: -1, stars: 0 },
+  { icon: '🍀🪙⬆️', coins: 10, chaos: 0, stars: 0 },
+  { icon: '🌈⭐⬆️', coins: 0, chaos: 0, stars: 1 },
+  { icon: '🧹🌪️⬇️', coins: 0, chaos: -2, stars: 0 },
+  { icon: '🪲🌪️⬆️', coins: 0, chaos: 2, stars: 0 },
+  { icon: '🎁🪙⬆️', coins: 18, chaos: 0, stars: 0 },
+  { icon: '🧯🌪️⬇️', coins: 0, chaos: -1, stars: 0 },
   { icon: '', coins: 0, chaos: 0, stars: 0 },
 ];

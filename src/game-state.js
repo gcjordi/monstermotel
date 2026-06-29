@@ -1,4 +1,4 @@
-import { MONSTERS, RANDOM_EVENTS } from './data.js';
+import { FEATURES, MONSTERS, RANDOM_EVENTS } from './data.js';
 import { clone, rnd, randomUint32 } from './utils.js';
 
 export function defaultState() {
@@ -21,16 +21,61 @@ export function defaultState() {
 }
 
 export function isValidState(value) {
+  if (!value || typeof value !== 'object') return false;
+  if (!isSafeInteger(value.day, 1, 9999)) return false;
+  if (!isSafeInteger(value.coins, 0, 999999)) return false;
+  if (!isSafeInteger(value.stars, 0, 5)) return false;
+  if (!isSafeInteger(value.chaos, 0, 9999)) return false;
+  if (!Array.isArray(value.rooms) || value.rooms.length !== defaultState().rooms.length) return false;
+  if (!Array.isArray(value.queue) || value.queue.length > 12) return false;
+  if (!Array.isArray(value.log) || value.log.length > 20) return false;
+
+  const roomIds = new Set();
+  if (!value.rooms.every((room) => isValidRoom(room, roomIds))) return false;
+  if (!value.queue.every(isValidGuest)) return false;
+  if (!value.log.every((line) => typeof line === 'string' && line.length <= 32)) return false;
+
+  return true;
+}
+
+function isSafeInteger(value, min, max) {
+  return Number.isSafeInteger(value) && value >= min && value <= max;
+}
+
+function isValidFeature(feature) {
+  return Object.prototype.hasOwnProperty.call(FEATURES, feature);
+}
+
+function isValidGuest(guest) {
+  if (!guest || typeof guest !== 'object') return false;
+  if (typeof guest.uid !== 'string' || guest.uid.length > 80) return false;
+
+  return MONSTERS.some((monster) => (
+    guest.icon === monster.icon
+      && guest.pay === monster.pay
+      && guest.chaos === monster.chaos
+      && sameFeatures(guest.wants, monster.wants)
+      && sameFeatures(guest.hates, monster.hates)
+  ));
+}
+
+function isValidRoom(room, roomIds) {
+  if (!room || typeof room !== 'object') return false;
+  if (!isSafeInteger(room.id, 1, 99) || roomIds.has(room.id)) return false;
+  roomIds.add(room.id);
   return Boolean(
-    value
-      && Number.isFinite(value.day)
-      && Number.isFinite(value.coins)
-      && Number.isFinite(value.stars)
-      && Number.isFinite(value.chaos)
-      && Array.isArray(value.rooms)
-      && Array.isArray(value.queue)
-      && Array.isArray(value.log),
+    Array.isArray(room.features)
+      && room.features.length <= Object.keys(FEATURES).length
+      && new Set(room.features).size === room.features.length
+      && room.features.every(isValidFeature)
+      && (room.guest === null || isValidGuest(room.guest)),
   );
+}
+
+function sameFeatures(value, expected) {
+  return Array.isArray(value)
+    && value.length === expected.length
+    && value.every((feature, index) => feature === expected[index]);
 }
 
 export function fillQueue(state, force = true) {
