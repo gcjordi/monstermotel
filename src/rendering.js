@@ -1,5 +1,5 @@
 import { FEATURES, MAX_LOG_LINES, SHOP } from './data.js';
-import { createEvent } from './ui.js';
+import { createElement, createEvent } from './ui.js';
 import { fitEmoji, scoreFit } from './game-state.js';
 
 export function render(elements, state, selection, handlers) {
@@ -29,7 +29,12 @@ function renderRooms(roomsEl, state, selection, handlers) {
       el.classList.add(sc >= 0 ? 'compat' : 'badfit');
     }
 
-    el.innerHTML = `<div class="roomNo">${room.id}</div><div class="guest">${room.guest ? room.guest.icon : '🛏️'}</div><div class="features">${room.features.map((f) => `<span class="feature">${FEATURES[f].icon}</span>`).join('')}</div><div class="roomScore">${selection.selectedGuest && !room.guest ? fitEmoji(scoreFit(selection.selectedGuest, room)) : ''}</div>`;
+    el.append(
+      createElement('div', 'roomNo', room.id),
+      createElement('div', 'guest', room.guest ? room.guest.icon : '🛏️'),
+      createFeatures(room.features),
+      createElement('div', 'roomScore', selection.selectedGuest && !room.guest ? fitEmoji(scoreFit(selection.selectedGuest, room)) : ''),
+    );
     el.addEventListener('click', () => handlers.onRoomClick(room.id));
     roomsEl.appendChild(el);
   });
@@ -42,7 +47,14 @@ function renderQueue(queueEl, state, selection, handlers) {
     el.className = `card${selection.selectedGuest && selection.selectedGuest.uid === g.uid ? ' selected' : ''}`;
     el.type = 'button';
     el.setAttribute('aria-label', 'guest');
-    el.innerHTML = `<div class="monster">${g.icon}</div><div class="needs">${g.wants.map((w) => `<span class="need">${FEATURES[w].icon}</span>`).join('')} ${g.hates.map((h) => `<span class="need hate">🚫${FEATURES[h].icon}</span>`).join('')}</div><div class="pay">🪙${g.pay}</div>`;
+    const needs = createElement('div', 'needs');
+    g.wants.forEach((w) => needs.appendChild(createElement('span', 'need', FEATURES[w].icon)));
+    g.hates.forEach((h) => needs.appendChild(createElement('span', 'need hate', `🚫${FEATURES[h].icon}`)));
+    el.append(
+      createElement('div', 'monster', g.icon),
+      needs,
+      createElement('div', 'pay', `🪙${g.pay}`),
+    );
     el.addEventListener('click', () => handlers.onGuestClick(g));
     queueEl.appendChild(el);
   });
@@ -55,10 +67,19 @@ function renderShop(shopEl, state, selection, handlers) {
     el.className = `shopItem${selection.selectedUpgrade === item.feature ? ' selected' : ''}`;
     el.type = 'button';
     el.disabled = state.coins < item.cost;
-    el.innerHTML = `<span class="left">${FEATURES[item.feature].icon}</span><span class="cost">🪙${item.cost}</span>`;
+    el.append(
+      createElement('span', 'left', FEATURES[item.feature].icon),
+      createElement('span', 'cost', `🪙${item.cost}`),
+    );
     el.addEventListener('click', () => handlers.onShopClick(item.feature));
     shopEl.appendChild(el);
   });
+}
+
+function createFeatures(features) {
+  const el = createElement('div', 'features');
+  features.forEach((feature) => el.appendChild(createElement('span', 'feature', FEATURES[feature].icon)));
+  return el;
 }
 
 function renderEvents(eventsEl, state) {
