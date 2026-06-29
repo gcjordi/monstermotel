@@ -1,5 +1,5 @@
 import { MONSTERS, RANDOM_EVENTS } from './data.js';
-import { clone, rnd } from './utils.js';
+import { clone, rnd, randomUint32 } from './utils.js';
 
 export function defaultState() {
   return {
@@ -39,7 +39,7 @@ export function fillQueue(state, force = true) {
   const n = Math.min(3 + Math.floor(state.day / 3), 5);
   state.queue = Array.from({ length: n }, (_, i) => ({
     ...clone(rnd(MONSTERS)),
-    uid: Date.now() + i + Math.random(),
+    uid: `${Date.now()}-${i}-${randomUint32()}`,
   }));
 }
 
