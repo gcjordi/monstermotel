@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="zxx">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#17172f" />
+  <title>Monster Motel</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2317172f'/%3E%3Ctext x='32' y='43' text-anchor='middle' font-size='36'%3E%F0%9F%8F%A8%3C/text%3E%3C/svg%3E">
+  <style>
+    :root{
+      --bg:#17172f; --panel:#232342; --panel2:#2d2d54; --ink:#fbfbff; --muted:#bfc2d9;
+      --good:#7ee39a; --bad:#ff8d8d; --warn:#ffd36e; --line:rgba(255,255,255,.16);
+      --shadow:0 18px 50px rgba(0,0,0,.32); --radius:22px;
+    }
+    *{box-sizing:border-box} html,body{height:100%}
+    body{margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; color:var(--ink); background:
+      radial-gradient(circle at 15% 10%, #44458c 0 0, transparent 28%),
+      radial-gradient(circle at 85% 15%, #6b3d83 0 0, transparent 26%),
+      linear-gradient(160deg,#14142a,#202047 55%,#151527); overflow-x:hidden; user-select:none;}
+    button{font:inherit;color:inherit;border:0;cursor:pointer} .app{max-width:1180px;margin:0 auto;padding:18px;min-height:100%}
+    .top{display:flex;gap:14px;align-items:center;justify-content:space-between;margin-bottom:16px}.brand{display:flex;gap:10px;align-items:center}
+    .logo{font-size:40px;filter:drop-shadow(0 8px 12px rgba(0,0,0,.3))}.title{font-size:26px;font-weight:900;letter-spacing:.03em}
+    .stats{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}.stat{display:flex;gap:7px;align-items:center;background:rgba(255,255,255,.1);border:1px solid var(--line);padding:9px 12px;border-radius:999px;box-shadow:0 8px 18px rgba(0,0,0,.12);font-weight:800}.stat span:first-child{font-size:22px}.stat .value{min-width:32px;text-align:right}
+    .board{display:grid;grid-template-columns:1.15fr .85fr;gap:16px}.panel{background:linear-gradient(180deg,rgba(255,255,255,.1),rgba(255,255,255,.055));border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;backdrop-filter:blur(8px)}
+    .iconHeader{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}.bigIcon{font-size:30px}.miniRules{display:flex;gap:8px;flex-wrap:wrap}.pill{background:rgba(255,255,255,.1);border:1px solid var(--line);border-radius:999px;padding:6px 9px;font-size:20px}
+    .rooms{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.room{position:relative;min-height:162px;border-radius:20px;background:linear-gradient(160deg,#2e2e59,#232343);border:2px solid rgba(255,255,255,.18);padding:12px;display:flex;flex-direction:column;justify-content:space-between;transition:.15s transform,.15s border-color,.15s background;box-shadow:inset 0 0 0 1px rgba(255,255,255,.05)}
+    .room:hover,.card:hover{transform:translateY(-2px)}.room.compat{border-color:var(--good);box-shadow:0 0 0 4px rgba(126,227,154,.15)}.room.badfit{border-color:var(--bad);box-shadow:0 0 0 4px rgba(255,141,141,.12)}.room.occupied{background:linear-gradient(160deg,#3a315d,#263553)}.roomNo{font-size:21px;opacity:.85}.features{display:flex;gap:7px;flex-wrap:wrap}.feature{font-size:24px;background:rgba(0,0,0,.17);padding:5px 7px;border-radius:12px}.guest{font-size:42px;text-align:center;min-height:54px;display:flex;align-items:center;justify-content:center;animation:pop .24s ease}.roomScore{font-size:22px;text-align:right;min-height:28px}
+    .side{display:flex;flex-direction:column;gap:16px}.queue{display:grid;gap:10px}.card{display:grid;grid-template-columns:64px 1fr auto;gap:12px;align-items:center;background:linear-gradient(160deg,#31315d,#26264a);border:2px solid rgba(255,255,255,.17);border-radius:20px;padding:10px;transition:.15s;box-shadow:0 12px 22px rgba(0,0,0,.14)}.card.selected{border-color:var(--warn);box-shadow:0 0 0 4px rgba(255,211,110,.17)}.monster{font-size:42px;text-align:center}.needs{display:flex;gap:7px;flex-wrap:wrap;align-items:center}.need{font-size:22px;border-radius:12px;padding:4px 7px;background:rgba(255,255,255,.1)}.hate{background:rgba(255,141,141,.16)}.pay{font-weight:900;font-size:20px;display:flex;align-items:center;gap:3px}
+    .actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}.btn{border-radius:18px;padding:13px 12px;background:linear-gradient(180deg,#595bc0,#41439a);border:1px solid rgba(255,255,255,.2);font-size:28px;box-shadow:0 10px 20px rgba(0,0,0,.22)}.btn:disabled{opacity:.42;cursor:not-allowed;filter:grayscale(1)}.btn.secondary{background:linear-gradient(180deg,#3c3c70,#2a2a52)}.btn.danger{background:linear-gradient(180deg,#9b4e75,#723553)}
+    .shop{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.shopItem{display:flex;align-items:center;justify-content:space-between;gap:8px;background:rgba(0,0,0,.18);border:1px solid var(--line);border-radius:16px;padding:10px}.shopItem .left{font-size:26px}.shopItem .cost{font-weight:900}.shopItem.selected{outline:3px solid rgba(255,211,110,.35)}
+    .events{min-height:118px;display:grid;gap:8px}.event{display:flex;align-items:center;gap:9px;background:rgba(0,0,0,.18);border:1px solid var(--line);border-radius:16px;padding:8px 10px;font-size:28px;animation:slide .28s ease}.toast{position:fixed;left:50%;top:18px;transform:translateX(-50%);background:#111224;border:1px solid var(--line);box-shadow:var(--shadow);border-radius:999px;padding:10px 18px;font-size:30px;z-index:30;animation:toast 1.2s ease forwards;pointer-events:none}.overlay{position:fixed;inset:0;background:rgba(8,8,20,.72);display:none;align-items:center;justify-content:center;padding:20px;z-index:20}.modal{max-width:560px;width:100%;background:linear-gradient(180deg,#30305a,#20203f);border:1px solid var(--line);border-radius:28px;box-shadow:var(--shadow);padding:24px;text-align:center}.modal .giant{font-size:76px}.modal .row{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin:18px 0}.modal .bubble{font-size:34px;background:rgba(255,255,255,.1);border-radius:18px;padding:10px 14px;min-width:82px}.help{display:grid;gap:10px;font-size:30px}.helpLine{display:flex;align-items:center;justify-content:center;gap:12px;background:rgba(255,255,255,.08);border-radius:16px;padding:10px}.kbd{font-size:18px;opacity:.7}
+    @keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}@keyframes slide{from{transform:translateX(12px);opacity:0}to{transform:none;opacity:1}}@keyframes toast{0%,80%{opacity:1;transform:translateX(-50%) translateY(0)}100%{opacity:0;transform:translateX(-50%) translateY(-18px)}}
+    @media(max-width:860px){.board{grid-template-columns:1fr}.rooms{grid-template-columns:repeat(2,minmax(0,1fr))}.top{align-items:flex-start}.title{font-size:20px}.card{grid-template-columns:54px 1fr auto}.monster{font-size:36px}.room{min-height:146px}}
+    @media(max-width:520px){.app{padding:10px}.rooms{grid-template-columns:1fr}.stats{justify-content:flex-start}.shop{grid-template-columns:1fr}.actions{grid-template-columns:1fr}.brand .title{display:none}}
+  </style>
+</head>
+<body>
+  <div class="app" id="app">
+    <div class="top">
+      <div class="brand"><div class="logo">🏨</div><div class="title">Monster Motel</div></div>
+      <div class="stats" aria-live="polite">
+        <div class="stat"><span>☀️</span><span class="value" id="day">1</span></div>
+        <div class="stat"><span>🪙</span><span class="value" id="coins">80</span></div>
+        <div class="stat"><span>⭐</span><span class="value" id="stars">3</span></div>
+        <div class="stat"><span>🌪️</span><span class="value" id="chaos">0</span></div>
+      </div>
+    </div>
+
+    <div class="board">
+      <section class="panel">
+        <div class="iconHeader"><div class="bigIcon">🛏️</div><div class="miniRules"><div class="pill">👾➡️🛏️</div><div class="pill">🌙➡️🪙⭐</div></div></div>
+        <div class="rooms" id="rooms"></div>
+      </section>
+      <aside class="side">
+        <section class="panel">
+          <div class="iconHeader"><div class="bigIcon">🚪👾</div><button class="btn secondary" id="helpBtn" aria-label="help">❔</button></div>
+          <div class="queue" id="queue"></div>
+        </section>
+        <section class="panel">
+          <div class="iconHeader"><div class="bigIcon">🛒</div><div class="miniRules"><div class="pill">🪙</div></div></div>
+          <div class="shop" id="shop"></div>
+        </section>
+        <section class="actions">
+          <button class="btn" id="nightBtn" aria-label="night">🌙</button>
+          <button class="btn danger" id="resetBtn" aria-label="reset">🔄</button>
+        </section>
+        <section class="panel events" id="events"></section>
+      </aside>
+    </div>
+  </div>
+
+  <div class="overlay" id="overlay"><div class="modal" id="modal"></div></div>
+
+<script>
+(() => {
+  const $ = s => document.querySelector(s);
+  const roomsEl = $('#rooms'), queueEl = $('#queue'), shopEl = $('#shop'), eventsEl = $('#events');
+  const dayEl = $('#day'), coinsEl = $('#coins'), starsEl = $('#stars'), chaosEl = $('#chaos');
+  const overlay = $('#overlay'), modal = $('#modal');
+
+  const FEATURES = {
+    dark:{icon:'🌑'}, mirror:{icon:'🪞'}, plug:{icon:'🔌'}, fireproof:{icon:'🧯'}, bath:{icon:'🛁'}, quiet:{icon:'🔇'}, cold:{icon:'❄️'}, garden:{icon:'🌿'}
+  };
+  const MONSTERS = [
+    {icon:'🧛', wants:['dark'], hates:['mirror'], pay:34, chaos:1},
+    {icon:'👻', wants:['dark','quiet'], hates:['plug'], pay:30, chaos:1},
+    {icon:'🐺', wants:['quiet'], hates:['mirror'], pay:32, chaos:2},
+    {icon:'🤖', wants:['plug'], hates:['bath'], pay:36, chaos:1},
+    {icon:'🐉', wants:['fireproof'], hates:['cold'], pay:45, chaos:3},
+    {icon:'🐙', wants:['bath'], hates:['plug'], pay:42, chaos:2},
+    {icon:'🧌', wants:['garden'], hates:['quiet'], pay:28, chaos:2},
+    {icon:'🦇', wants:['dark'], hates:['mirror'], pay:24, chaos:1},
+    {icon:'🧊', wants:['cold'], hates:['fireproof'], pay:38, chaos:1},
+    {icon:'🦄', wants:['garden','quiet'], hates:['dark'], pay:44, chaos:0}
+  ];
+  const SHOP = [
+    {feature:'dark', cost:28}, {feature:'plug', cost:30}, {feature:'quiet', cost:34}, {feature:'fireproof', cost:38},
+    {feature:'bath', cost:36}, {feature:'cold', cost:32}, {feature:'garden', cost:35}, {feature:'mirror', cost:18}
+  ];
+
+  let state, selectedGuest = null, selectedUpgrade = null;
+  function fresh(){
+    state = {
+      day:1, coins:80, stars:3, chaos:0,
+      rooms:[
+        {id:1, features:['dark'], guest:null}, {id:2, features:['plug'], guest:null}, {id:3, features:['quiet'], guest:null},
+        {id:4, features:['mirror'], guest:null}, {id:5, features:['bath'], guest:null}, {id:6, features:['cold'], guest:null}
+      ],
+      queue:[], log:[]
+    }; nextQueue(); save(); render(); showHelp();
+  }
+  function save(){localStorage.setItem('monster-motel-v1', JSON.stringify(state));}
+  function load(){try{state=JSON.parse(localStorage.getItem('monster-motel-v1'));}catch(e){} if(!state) fresh(); else {nextQueue(false); render();}}
+  function rnd(arr){return arr[Math.floor(Math.random()*arr.length)]}
+  function clone(o){return JSON.parse(JSON.stringify(o))}
+  function nextQueue(force=true){
+    if(!force && state.queue && state.queue.length) return;
+    const n = Math.min(3 + Math.floor(state.day/3), 5);
+    state.queue = Array.from({length:n},(_,i)=> ({...clone(rnd(MONSTERS)), uid: Date.now()+i+Math.random()}));
+  }
+  function scoreFit(monster, room){
+    const wants = monster.wants.filter(w=>room.features.includes(w)).length;
+    const hates = monster.hates.filter(h=>room.features.includes(h)).length;
+    let score = wants*2 - hates*3;
+    if(room.guest) score -= 99;
+    return score;
+  }
+  function fitEmoji(score){ return score>=4?'😍':score>=2?'😊':score>=0?'😐':'😭'; }
+  function render(){
+    dayEl.textContent=state.day; coinsEl.textContent=state.coins; starsEl.textContent=state.stars; chaosEl.textContent=state.chaos;
+    roomsEl.innerHTML = '';
+    state.rooms.forEach(room=>{
+      const el=document.createElement('button'); el.className='room'+(room.guest?' occupied':''); el.setAttribute('aria-label','room '+room.id);
+      if(selectedGuest && !room.guest){ const sc=scoreFit(selectedGuest,room); el.classList.add(sc>=0?'compat':'badfit'); }
+      el.innerHTML = `<div class="roomNo">${room.id}</div><div class="guest">${room.guest?room.guest.icon:'🛏️'}</div><div class="features">${room.features.map(f=>`<span class="feature">${FEATURES[f].icon}</span>`).join('')}</div><div class="roomScore">${selectedGuest && !room.guest ? fitEmoji(scoreFit(selectedGuest,room)) : ''}</div>`;
+      el.onclick=()=>roomClick(room.id); roomsEl.appendChild(el);
+    });
+    queueEl.innerHTML='';
+    state.queue.forEach(g=>{
+      const el=document.createElement('button'); el.className='card'+(selectedGuest&&selectedGuest.uid===g.uid?' selected':''); el.setAttribute('aria-label','guest');
+      el.innerHTML=`<div class="monster">${g.icon}</div><div class="needs">${g.wants.map(w=>`<span class="need">${FEATURES[w].icon}</span>`).join('')} ${g.hates.map(h=>`<span class="need hate">🚫${FEATURES[h].icon}</span>`).join('')}</div><div class="pay">🪙${g.pay}</div>`;
+      el.onclick=()=>{selectedGuest = selectedGuest&&selectedGuest.uid===g.uid ? null : g; selectedUpgrade=null; render();};
+      queueEl.appendChild(el);
+    });
+    shopEl.innerHTML='';
+    SHOP.forEach(item=>{
+      const el=document.createElement('button'); el.className='shopItem'+(selectedUpgrade===item.feature?' selected':''); el.disabled=state.coins<item.cost;
+      el.innerHTML=`<span class="left">${FEATURES[item.feature].icon}</span><span class="cost">🪙${item.cost}</span>`;
+      el.onclick=()=>{selectedUpgrade = selectedUpgrade===item.feature ? null : item.feature; selectedGuest=null; render(); toast('🛒➡️🛏️');}; shopEl.appendChild(el);
+    });
+    $('#nightBtn').disabled = !state.rooms.some(r=>r.guest);
+    eventsEl.innerHTML = (state.log||[]).slice(-4).reverse().map(e=>`<div class="event">${e}</div>`).join('') || '<div class="event">👾➡️🛏️</div>';
+    save();
+  }
+  function roomClick(id){
+    const room=state.rooms.find(r=>r.id===id);
+    if(selectedGuest){
+      if(room.guest){toast('🚫'); return;}
+      room.guest=selectedGuest; state.queue = state.queue.filter(g=>g.uid!==selectedGuest.uid); selectedGuest=null; toast('👾➡️🛏️'); render(); return;
+    }
+    if(selectedUpgrade){
+      const item=SHOP.find(s=>s.feature===selectedUpgrade);
+      if(state.coins<item.cost || room.features.includes(selectedUpgrade)){toast('🚫'); return;}
+      state.coins-=item.cost; room.features.push(selectedUpgrade); selectedUpgrade=null; toast('🛠️✨'); render(); return;
+    }
+    if(room.guest){ state.queue.push(room.guest); room.guest=null; toast('👾↩️'); render(); }
+  }
+  function passNight(){
+    let earned=0, chaosDelta=0, starDelta=0, lines=[];
+    state.rooms.forEach(room=>{
+      if(!room.guest) return;
+      const g=room.guest, sc=scoreFit(g,room);
+      if(sc>=4){earned += g.pay + 12; starDelta += 1; lines.push(`${g.icon} ${fitEmoji(sc)} 🪙✨`);} 
+      else if(sc>=2){earned += g.pay; lines.push(`${g.icon} ${fitEmoji(sc)} 🪙`);} 
+      else if(sc>=0){earned += Math.max(8, Math.floor(g.pay*.55)); chaosDelta += g.chaos; lines.push(`${g.icon} ${fitEmoji(sc)} 🌪️`);} 
+      else {earned += Math.max(0, Math.floor(g.pay*.18)); chaosDelta += g.chaos+2; starDelta -= 1; lines.push(`${g.icon} ${fitEmoji(sc)} 💥`);}
+      room.guest=null;
+    });
+    const event = randomEvent();
+    earned += event.coins; chaosDelta += event.chaos; starDelta += event.stars; if(event.icon) lines.push(event.icon);
+    state.coins = Math.max(0, state.coins + earned - Math.max(0, chaosDelta-3)*3);
+    state.chaos = Math.max(0, state.chaos + chaosDelta - 1);
+    state.stars = Math.max(0, Math.min(5, state.stars + starDelta));
+    state.day++;
+    state.log = lines.slice(-5);
+    selectedGuest=null; selectedUpgrade=null; nextQueue(true); render(); showSummary(earned, starDelta, chaosDelta, event.icon);
+    if(state.chaos>=12 || state.stars<=0) gameOver();
+  }
+  function randomEvent(){
+    const events=[
+      {icon:'🍀 🪙+10', coins:10, chaos:0, stars:0}, {icon:'🌈 ⭐+1', coins:0, chaos:0, stars:1},
+      {icon:'🧹 🌪️-2', coins:0, chaos:-2, stars:0}, {icon:'🪲 🌪️+2', coins:0, chaos:2, stars:0},
+      {icon:'🎁 🪙+18', coins:18, chaos:0, stars:0}, {icon:'🧯 🌪️-1', coins:0, chaos:-1, stars:0},
+      {icon:'', coins:0, chaos:0, stars:0}
+    ]; return rnd(events);
+  }
+  function showSummary(earned, stars, chaos, ev){
+    overlay.style.display='flex';
+    modal.innerHTML=`<div class="giant">🌙</div><div class="row"><div class="bubble">🪙${earned>=0?'+':''}${earned}</div><div class="bubble">⭐${stars>=0?'+':''}${stars}</div><div class="bubble">🌪️${chaos>=0?'+':''}${chaos}</div></div><div class="row"><button class="btn" id="okBtn">☀️</button></div>`;
+    $('#okBtn').onclick=()=>{overlay.style.display='none';};
+  }
+  function gameOver(){
+    setTimeout(()=>{
+      overlay.style.display='flex';
+      modal.innerHTML=`<div class="giant">🏨💫</div><div class="row"><div class="bubble">☀️${state.day}</div><div class="bubble">🪙${state.coins}</div><div class="bubble">⭐${state.stars}</div></div><div class="row"><button class="btn" id="againBtn">🔄</button></div>`;
+      $('#againBtn').onclick=()=>{overlay.style.display='none'; fresh();};
+    },250);
+  }
+  function showHelp(){
+    overlay.style.display='flex';
+    modal.innerHTML=`<div class="giant">🏨👾</div><div class="help"><div class="helpLine">👾 ➡️ 🛏️</div><div class="helpLine">✅ ${Object.values(FEATURES).slice(0,4).map(f=>f.icon).join(' ')}</div><div class="helpLine">🚫 🪞 🔌 🔥 💡</div><div class="helpLine">🌙 ➡️ 🪙 ⭐</div><div class="helpLine">🌪️ ➡️ 😭</div></div><div class="row"><button class="btn" id="playBtn">▶️</button></div>`;
+    $('#playBtn').onclick=()=>{overlay.style.display='none';};
+  }
+  function toast(msg){const t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),1200);}
+  $('#nightBtn').onclick=passNight; $('#resetBtn').onclick=()=>fresh(); $('#helpBtn').onclick=showHelp;
+  load();
+})();
+</script>
+</body>
+</html>
